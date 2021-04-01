@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <stdbool.h>
 
 void menu ()
 {
@@ -47,12 +48,18 @@ int convertOctalToDecimal(int octal)
     return decimal;
 }
 
+bool validateOctal(int octal)
+{
+    //Valida se o ultimo digito é menor que 8 para ser um número octal válido
+    return (octal % 10) < 8;
+}
+
 int main()
 {
     //Localiza os textos impressos no console para Português
     setlocale(LC_ALL, "Portuguese");
 
-    int option = 0, integer = 0;
+    int option = 0, integer = 0, returnScanf = 0;
 
     //Executa o loop enquanto o valor de entrada não for zerado
     do {
@@ -65,14 +72,27 @@ int main()
         //Verifica qual tipo de conversão será executada e á executa
         switch (option) {
             case 1:
-                printf("Digite o valor decimal para ser convertido em octal: ");
-                scanf("%d", &integer);
+                //Valida se o tipo de entrada é do tipo int
+                do {
+                    printf("Digite o valor decimal para ser convertido em octal: ");
+                    returnScanf = scanf("%d", &integer);
+                    fflush(stdin);
+                } while (returnScanf != 1);
+
                 printf("\nO valor em octal é: %d\n", convertDecimalToOctal(integer));
                 system("pause");
                 break;
             case 2:
-                printf("Digite o valor octal para ser convertido em decimal: ");
-                scanf("%d", &integer);
+                //Valida se o tipo de entrada é do tipo int e se é um valor octal válido
+                do {
+                    printf("Digite o valor octal para ser convertido em decimal: ");
+                    returnScanf = scanf("%d", &integer);
+                    if (!validateOctal(integer)) {
+                        returnScanf = 0;
+                    }
+                    fflush(stdin);
+                } while (returnScanf != 1);
+
                 printf("\nO valor decimal foi: %d\n", convertOctalToDecimal(integer));
                 system("pause");
                 break;
